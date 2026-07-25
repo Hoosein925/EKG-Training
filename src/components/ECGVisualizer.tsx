@@ -996,13 +996,7 @@ export default function ECGVisualizer({ parameters, rhythmName, rhythmNameEnglis
                 label = "P";
               }
             }
-            // 2. PR Delta Segment (WPW)
-            else if (rhythmId === "wpw" && u >= (qrsStart - 0.04) && u < qrsStart) {
-              const deltaRatio = (u - (qrsStart - 0.04)) / 0.04;
-              beatDeflections += deltaRatio * 0.20 * qrsSign * 70;
-              label = "Delta Wave";
-            }
-            // 3. QRS Complex
+            // 2. QRS Complex
             else if (u >= qrsStart && u < qrsEnd) {
               if (!beat.isDropped) {
                 const d = u - qrsStart;
@@ -1151,14 +1145,18 @@ export default function ECGVisualizer({ parameters, rhythmName, rhythmNameEnglis
                   const sVal = -0.35 * qrsAmpMult * qrsSign; 
                   const jVal = customStLevel * 0.08 * stModifier;
                   
-                  if (d < L * 0.4) {
-                    qrsWave = linearInterpolate(0, dVal, d / (L * 0.4));
+                  if (d < L * 0.38) {
+                    qrsWave = linearInterpolate(0, dVal, d / (L * 0.38));
+                    label = "Delta Wave (موج دلتا)";
                   } else if (d < L * 0.62) {
-                    qrsWave = linearInterpolate(dVal, rVal, (d - L * 0.4) / (L * 0.22));
+                    qrsWave = linearInterpolate(dVal, rVal, (d - L * 0.38) / (L * 0.24));
+                    label = "QRS";
                   } else if (d < L * 0.82) {
                     qrsWave = linearInterpolate(rVal, sVal, (d - L * 0.62) / (L * 0.20));
+                    label = "QRS";
                   } else {
                     qrsWave = linearInterpolate(sVal, jVal, (d - L * 0.82) / (L * 0.18));
+                    label = "QRS";
                   }
                 }
                 else if (isLADInferior || isRADLateral || isERADNegative) {
